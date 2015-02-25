@@ -42,7 +42,7 @@ public class FilesController {
 
 		try {
 
-			final byte[] contents = utilsFileGenerator.createPDFInBytes(cssUrl.getPath(), templateUrl.getPath(), this.generateModelDummy());
+			final byte[] contents = utilsFileGenerator.createPDFInBytes(templateUrl.getPath(), cssUrl.getPath(), this.generateModelDummy());
 
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.parseMediaType("application/pdf"));
