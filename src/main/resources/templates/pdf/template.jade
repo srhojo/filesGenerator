@@ -1,0 +1,12 @@
+doctype xhtml
+html
+	head
+		title="Prueba impresion"
+		link(rel='stylesheet', href='#{css}')/
+	body
+		#mainContainer
+			#maquetado
+				span #{maquetador.nombre}, #{maquetador.empresa}
+			ol#usuarios
+				for usr in usuarios
+					li #{usr.nombre} #{usr.apellidos} - #{usr.edad} : #{usr.direccion.calle} , #{usr.direccion.numero}
