@@ -7,21 +7,22 @@ html
 		#mainContainer
 			#header
 				.icon
-					img(src="img/icon.png", alt="company")
-				.title #{user.name}, #{user.company}
+				.title=user.name + ',' + user.company
 			#wrapper
-				.title #{subject}
+				.title=subject
 				table#contentTable
 					tr
 						th="ID"
 						th="NAME"
 						th="PLANET"
 						th="HOUR"
+						th="SALARY"
 					for deliveryman in deliverymen
 						tr
-							td #{deliveryman.id}
-							td #{deliveryman.name}
-							td #{deliveryman.planet.name}
-							td #{deliveryman.time}
+							td=deliveryman.id
+							td=deliveryman.name +' '+deliveryman.surname
+							td=deliveryman.planet.name
+							td=utilsTime.parseLocaltimeToString(deliveryman.time,"HH:mm")
+							td=utilsMoney.parseMoneyToString(deliveryman.salary)
 			#footer
 				.info "Pruebas de concepto jade-pdf"

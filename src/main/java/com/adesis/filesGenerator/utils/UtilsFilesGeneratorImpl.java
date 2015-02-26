@@ -37,6 +37,10 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		// Añadimos el CSS.
 		data.put("css", cssFile);
 
+		// Add utils classes
+		data.put("utilsTime", new UtilsLocaltime());
+		data.put("utilsMoney", new UtilsMoney());
+
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			final ITextRenderer renderer = new ITextRenderer();

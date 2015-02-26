@@ -1,5 +1,6 @@
 package com.adesis.filesGenerator.controller;
 
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.adesis.filesGenerator.model.dummy.Deliveryman;
+import com.adesis.filesGenerator.model.dummy.Money;
 import com.adesis.filesGenerator.model.dummy.Planet;
 import com.adesis.filesGenerator.model.dummy.User;
 import com.adesis.filesGenerator.utils.IUtilsFileGenerator;
@@ -93,6 +95,7 @@ public class FilesController {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("deliverymen", this.generateListDeliverymen());
 		model.put("user", this.generateUser());
+		model.put("subject", "Delivery notes");
 		return model;
 	}
 
@@ -102,11 +105,16 @@ public class FilesController {
 
 	private List<Deliveryman> generateListDeliverymen() {
 		final List<Deliveryman> list = new ArrayList<Deliveryman>();
-		final Deliveryman u1 = new Deliveryman(1, "Javier", "Lacalle", 26, new LocalTime(12, 56, 0), new Planet("Tierra"));
-		final Deliveryman u2 = new Deliveryman(2, "Fry", "", 24, new LocalTime(16, 56, 0), new Planet("Tierra"));
-		final Deliveryman u3 = new Deliveryman(3, "Leela", "", 27, new LocalTime(17, 56, 0), new Planet("Tierra(mutante)"));
-		final Deliveryman u4 = new Deliveryman(4, "Amy Wong", "", 26, new LocalTime(19, 56, 0), new Planet("Marte"));
-		final Deliveryman u5 = new Deliveryman(5, "Zoiberg", "", 32, new LocalTime(20, 56, 0), new Planet("Decapod 10"));
+		final Deliveryman u1 = new Deliveryman(1, "Javier", "Lacalle", 26, new LocalTime(12, 56, 0), new Planet("Tierra"),
+				Money.createInEuros(BigDecimal.valueOf(1000)));
+		final Deliveryman u2 = new Deliveryman(2, "Fry", "", 24, new LocalTime(16, 56, 0), new Planet("Tierra"),
+				Money.createInEuros(BigDecimal.valueOf(200)));
+		final Deliveryman u3 = new Deliveryman(3, "Leela", "", 27, new LocalTime(17, 56, 0), new Planet("Tierra(mutante)"),
+				Money.createInEuros(BigDecimal.valueOf(1200)));
+		final Deliveryman u4 = new Deliveryman(4, "Amy Wong", "", 26, new LocalTime(19, 56, 0), new Planet("Marte"),
+				Money.createInEuros(BigDecimal.valueOf(5200)));
+		final Deliveryman u5 = new Deliveryman(5, "Zoiberg", "", 32, new LocalTime(20, 56, 0), new Planet("Decapod 10"),
+				Money.createInEuros(BigDecimal.ZERO));
 
 		list.add(u1);
 		list.add(u2);

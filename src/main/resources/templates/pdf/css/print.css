@@ -10,7 +10,7 @@ body{
 }
 
 #header{
-	min-height: 250px;
+	min-height: 200px;
 	margin: 5px;
 	font-size: 1.5em;
 	position: relative;
@@ -18,12 +18,12 @@ body{
 
 #header .icon {
 	float:left;
-	margin: 5px;
-}
-
-#header .icon img {
-	height: 250px;
-	margin-left: 15%;
+	margin-left: 10%;
+	height: 150px;
+	width: 150px;
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+	background-image: url("../img/icon.png") ;
 }
 
 
