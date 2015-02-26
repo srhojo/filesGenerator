@@ -10,12 +10,13 @@ public class Deliveryman {
 	private Integer years;
 	private LocalTime time;
 	private Planet planet;
+	private Money salary;
 
 	public Deliveryman() {
 	}
 
 	public Deliveryman(final Integer id, final String name, final String surname, final Integer years, final LocalTime time,
-			final Planet planet) {
+			final Planet planet, final Money salary) {
 		super();
 		this.setId(id);
 		this.name = name;
@@ -23,6 +24,7 @@ public class Deliveryman {
 		this.years = years;
 		this.time = time;
 		this.planet = planet;
+		this.salary = salary;
 	}
 
 	/**
@@ -108,10 +110,26 @@ public class Deliveryman {
 	}
 
 	/**
-	 * @param id the id to set
+	 * @param id
+	 *            the id to set
 	 */
-	public void setId(Integer id) {
+	public void setId(final Integer id) {
 		this.id = id;
+	}
+
+	/**
+	 * @return the salary
+	 */
+	public Money getSalary() {
+		return salary;
+	}
+
+	/**
+	 * @param salary
+	 *            the salary to set
+	 */
+	public void setSalary(final Money salary) {
+		this.salary = salary;
 	}
 
 }

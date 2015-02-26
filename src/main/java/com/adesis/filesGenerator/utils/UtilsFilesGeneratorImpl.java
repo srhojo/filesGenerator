@@ -30,11 +30,16 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	/**
 	 *
 	 */
+	@Override
 	public byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data) {
 
 		byte[] pdfBytes = null;
 		// Añadimos el CSS.
 		data.put("css", cssFile);
+
+		// Add utils classes
+		data.put("utilsTime", new UtilsLocaltime());
+		data.put("utilsMoney", new UtilsMoney());
 
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
