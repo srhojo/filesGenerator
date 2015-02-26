@@ -1,6 +1,7 @@
 body{
 	margin: 0;
-	background-color: #F00;
+	/*background-color: #E6E6E6;*/
+	font-family:Arial, Helvetica, sans-serif;
 }
 
 #mainContainer{
@@ -8,13 +9,84 @@ body{
 	width: 100%;
 }
 
-#maquetado {
-	position: left;
-	text-align: left;
+#header{
+	min-height: 250px;
+	margin: 5px;
+	font-size: 1.5em;
+	position: relative;
 }
 
-#usuarios {
-	width: auto;
+#header .icon {
+	float:left;
+	margin: 5px;
+}
+
+#header .icon img {
+	height: 250px;
+	margin-left: 15%;
+}
+
+
+#header .title {
+	position: absolute;
+	bottom: 0;
+	right: 10%;
+}
+
+#wrapper {
+	margin: 5% 5% 5% 5%;
+	font-size: 1em;
+}
+
+#wrapper .title {
+	text-align: center;
+	font-size: 2.5em;
+	margin: 0 auto 2% auto;
+
+}
+
+#contentTable {
+	width: 90%;
 	margin: 0 auto;
-	border: solid 1px;
+	border:#151515 1px solid;
+	text-align: center;
+
+	-moz-border-radius:3px;
+	-webkit-border-radius:3px;
+	border-radius:3px;
+
+	-moz-box-shadow: 0 1px 2px #d1d1d1;
+	-webkit-box-shadow: 0 1px 2px #d1d1d1;
+	box-shadow: 0 1px 2px #d1d1d1;
+}
+
+#contentTable th{
+	margin: 0;
+	padding: 10px;
+	font-size: 1.5em;
+	background-color: #6E6E6E;
+	border-top:1px solid ##6E6E6E;
+	border-bottom:1px solid #6E6E6E;
+}
+
+#contentTable td {
+	padding:18px;
+	border-top: 1px solid #ffffff;
+	border-bottom:1px solid #e0e0e0;
+	border-left: 1px solid #e0e0e0;
+}
+
+#contentTable tr:nth-child(odd){
+	background-color:#D8D8D8; 
+}
+
+#footer {
+	font-size: 0.7em;
+	width: 100%;
+	margin: 2% 0;
+}
+
+#footer .info{
+	margin: 0 auto;
+	text-align: center;
 }

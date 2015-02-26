@@ -53,6 +53,14 @@
 		<version>2.5</version>
 	</dependency>
 	
+	<!-- Joda time -->
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		<version>2.7</version>
+	</dependency>
+	
+	
 	
 	<!-- Flying saucer **Generador de PDF a partir de XHTML** -->
   	<dependency>

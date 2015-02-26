@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.LocalTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.adesis.filesGenerator.model.dummy.Maquetador;
-import com.adesis.filesGenerator.model.dummy.Usuarios;
+import com.adesis.filesGenerator.model.dummy.Deliveryman;
+import com.adesis.filesGenerator.model.dummy.Planet;
+import com.adesis.filesGenerator.model.dummy.User;
 import com.adesis.filesGenerator.utils.IUtilsFileGenerator;
 
 /**
@@ -64,25 +66,28 @@ public class FilesController {
 
 	private Map<String, Object> generateModelDummy() {
 		final Map<String, Object> model = new HashMap<String, Object>();
-		model.put("usuarios", this.generateList());
-		model.put("maquetador", this.generateDummyDesigner());
+		model.put("deliverymen", this.generateListDeliverymen());
+		model.put("user", this.generateUser());
 		return model;
 	}
 
-	private Maquetador generateDummyDesigner() {
-		return new Maquetador("Javier Lacalle", "Adesis");
+	private User generateUser() {
+		return new User("Javier Lacalle", "Adesis");
 	}
 
-	private List<Usuarios> generateList() {
-		final List<Usuarios> lista = new ArrayList<Usuarios>();
-		final Usuarios u1 = new Usuarios("Javier", "Lacalle", 26);
-		final Usuarios u2 = new Usuarios("Diego", "Asensio", 25);
-		final Usuarios u3 = new Usuarios("Manuel", "Bayona", null);
+	private List<Deliveryman> generateListDeliverymen() {
+		final List<Deliveryman> list = new ArrayList<Deliveryman>();
+		final Deliveryman u1 = new Deliveryman(1, "Javier", "Lacalle", 26, new LocalTime(12, 56, 0), new Planet("Tierra"));
+		final Deliveryman u2 = new Deliveryman(2, "Fry", "", 24, new LocalTime(16, 56, 0), new Planet("Tierra"));
+		final Deliveryman u3 = new Deliveryman(3, "Leela", "", 27, new LocalTime(17, 56, 0), new Planet("Tierra(mutante)"));
+		final Deliveryman u4 = new Deliveryman(4, "Amy Wong", "", 26, new LocalTime(19, 56, 0), new Planet("Marte"));
+		final Deliveryman u5 = new Deliveryman(5, "Zoiberg", "", 32, new LocalTime(20, 56, 0), new Planet("Decapod 10"));
 
-		lista.add(u1);
-		lista.add(u2);
-		lista.add(u3);
-		return lista;
+		list.add(u1);
+		list.add(u2);
+		list.add(u3);
+		list.add(u4);
+		list.add(u5);
+		return list;
 	}
-
 }

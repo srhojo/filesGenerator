@@ -1,12 +1,27 @@
 doctype xhtml
 html
 	head
-		title="Prueba impresion"
+		title="Albaran futurama"
 		link(rel='stylesheet', href='#{css}')/
 	body
 		#mainContainer
-			#maquetado
-				span #{maquetador.nombre}, #{maquetador.empresa}
-			ol#usuarios
-				for usr in usuarios
-					li #{usr.nombre} #{usr.apellidos} - #{usr.edad} : #{usr.direccion.calle} , #{usr.direccion.numero}
+			#header
+				.icon
+					img(src="img/icon.png", alt="company")
+				.title #{user.name}, #{user.company}
+			#wrapper
+				.title #{subject}
+				table#contentTable
+					tr
+						th="ID"
+						th="NAME"
+						th="PLANET"
+						th="HOUR"
+					for deliveryman in deliverymen
+						tr
+							td #{deliveryman.id}
+							td #{deliveryman.name}
+							td #{deliveryman.planet.name}
+							td #{deliveryman.time}
+			#footer
+				.info "Pruebas de concepto jade-pdf"
