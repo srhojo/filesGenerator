@@ -68,6 +68,7 @@ public class FilesController {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("deliverymen", this.generateListDeliverymen());
 		model.put("user", this.generateUser());
+		model.put("subject", "Delivery notes");
 		return model;
 	}
 
