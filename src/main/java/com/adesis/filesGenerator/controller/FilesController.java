@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.adesis.filesGenerator.model.FileGenerationInfo;
 import com.adesis.filesGenerator.model.dummy.Deliveryman;
 import com.adesis.filesGenerator.model.dummy.Money;
 import com.adesis.filesGenerator.model.dummy.Planet;
@@ -44,9 +45,11 @@ public class FilesController {
 		final URL templateUrl = classLoader.getResource("templates/pdf/template.jade");
 		final URL cssUrl = classLoader.getResource("templates/pdf/css/print.css");
 
+		final FileGenerationInfo pdfGenerationInfo = generateInfoPDF(templateUrl, cssUrl);
+
 		try {
 
-			final byte[] contents = utilsFileGenerator.createPDFInBytes(templateUrl.getPath(), cssUrl.getPath(), this.generateModelDummy());
+			final byte[] contents = utilsFileGenerator.createPDFInBytes(pdfGenerationInfo);
 
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.parseMediaType("application/pdf"));
@@ -63,7 +66,18 @@ public class FilesController {
 		return response;
 
 	}
-	
+
+	@SuppressWarnings("unchecked")
+	private FileGenerationInfo generateInfoPDF(final URL templateUrl, final URL cssUrl) {
+		final FileGenerationInfo pdfGenerationInfo = new FileGenerationInfo();
+		// pdfGenerationInfo.setTemplateCss(cssUrl.getPath());
+		pdfGenerationInfo.setTemplate(templateUrl.getPath());
+		pdfGenerationInfo.setDataModel(this.generateModelDummy());
+		// TODO Cambiar a algo más bonico
+		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("css", cssUrl.getPath());
+		return pdfGenerationInfo;
+	}
+
 	@RequestMapping(value = "/txt", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
 

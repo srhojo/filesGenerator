@@ -2,6 +2,8 @@ package com.adesis.filesGenerator.utils;
 
 import java.util.Map;
 
+import com.adesis.filesGenerator.model.FileGenerationInfo;
+
 /**
  * @author Javier Lacalle
  *
@@ -22,7 +24,7 @@ public interface IUtilsFileGenerator {
 	 *            with data model
 	 * @return PDF encoding to byte
 	 */
-	byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data);
-	
+	byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo);
+
 	byte[] createTXTInBytes(final Map<String, Object> data);
 }

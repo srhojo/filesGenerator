@@ -3,18 +3,16 @@
  */
 package com.adesis.filesGenerator.utils;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.lowagie.text.pdf.PdfWriter;
 
 import de.neuland.jade4j.Jade4J;
 import de.neuland.jade4j.exceptions.JadeCompilerException;
@@ -31,26 +29,17 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	/**
 	 *
 	 */
-	public byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data) {
+	@Override
+	public byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) {
 
 		byte[] pdfBytes = null;
-		// Añadimos el CSS.
-		data.put("css", cssFile);
-
-		// Add utils classes
-		data.put("utilsTime", new UtilsLocaltime());
-		data.put("utilsMoney", new UtilsMoney());
 
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			final ITextRenderer renderer = new ITextRenderer();
 
-			final byte[] byteArray = renderJadeToBytes(templateFile, data);
-			final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			final ByteArrayInputStream baosAux = new ByteArrayInputStream(byteArray);
-			final Document doc = builder.parse(baosAux);
-
-			renderer.setDocument(doc, null);
+			renderer.setPDFVersion(new Character(PdfWriter.VERSION_1_7));
+			renderer.setDocumentFromString(renderJadeToString(fileGenerationInfo));
 			renderer.layout();
 			renderer.createPDF(baos);
 
@@ -64,13 +53,14 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		}
 		return pdfBytes;
 	}
-	
-	public byte[] createTXTInBytes(Map<String, Object> data) {
-		
+
+	@Override
+	public byte[] createTXTInBytes(final Map<String, Object> data) {
+
 		byte[] txtBytes = null;
-        ByteArrayOutputStream bos = null;
-        ObjectOutputStream oos = null;
-		
+		ByteArrayOutputStream bos = null;
+		ObjectOutputStream oos = null;
+
 		try {
 			bos = new ByteArrayOutputStream();
 			oos = new ObjectOutputStream(bos);
@@ -84,7 +74,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return txtBytes;
 	}
 
@@ -102,6 +92,26 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	private byte[] renderJadeToBytes(final String jadeFile, final Map<String, Object> data) throws JadeCompilerException, IOException {
 		final String html = Jade4J.render(jadeFile, data);
 		return html.getBytes(ENCODE);
+	}
+
+	/**
+	 * Método para generar un Sting a partir de la plantilla Jade y los datos del modelo.
+	 *
+	 * @param pdfGenerationInfo
+	 *            Objeto que contiene toda la información relacionada con la generación del PDF.
+	 * @return
+	 * @throws JadeCompilerException
+	 * @throws IOException
+	 */
+	@SuppressWarnings("unchecked")
+	private String renderJadeToString(final FileGenerationInfo pdfGenerationInfo) throws JadeCompilerException, IOException {
+		// Add CSS
+		// pdfGenerationInfo.getDataModel().put("css", pdfGenerationInfo.getTemplateCss());
+		// Add utils lib.
+		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("utilsTime", new UtilsLocaltime());
+		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("utilsMoney", new UtilsMoney());
+		// Render Jade with data model
+		return Jade4J.render(pdfGenerationInfo.getTemplate(), (Map<String, Object>) pdfGenerationInfo.getDataModel());
 	}
 
 }
