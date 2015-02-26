@@ -6,6 +6,7 @@ package com.adesis.filesGenerator.utils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -59,6 +60,29 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		}
 		return pdfBytes;
 	}
+	
+	public byte[] createTXTInBytes(Map<String, Object> data) {
+		
+		byte[] txtBytes = null;
+        ByteArrayOutputStream bos = null;
+        ObjectOutputStream oos = null;
+		
+		try {
+			bos = new ByteArrayOutputStream();
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(data);
+			oos.flush();
+			bos.flush();
+			bos.close();
+			oos.close();
+			txtBytes = bos.toByteArray();
+
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+		
+		return txtBytes;
+	}
 
 	/**
 	 * Método para generer el array de bytes con el que se generará el PDF.
@@ -66,7 +90,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	 * @param jadeFile
 	 *            Dirección completa donde se encuentra el fichero Jade para rederizar.
 	 * @param data
-	 *            HasMap con los datos con los que rellenar la plantilla.
+	 *            HashMap con los datos con los que rellenar la plantilla.
 	 * @return array de bytes con el HTML rederizado.
 	 * @throws JadeCompilerException
 	 * @throws IOException

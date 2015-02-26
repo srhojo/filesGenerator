@@ -61,6 +61,31 @@ public class FilesController {
 		return response;
 
 	}
+	
+	@RequestMapping(value = "/txt", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
+
+		ResponseEntity<byte[]> response;
+
+		try {
+
+			final byte[] contents = utilsFileGenerator.createTXTInBytes(this.generateModelDummy());
+
+			final HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.parseMediaType("text/plain"));
+
+			final String filename = "output.txt";
+			headers.setContentDispositionFormData(filename, filename);
+			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+			response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			response = new ResponseEntity<byte[]>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return response;
+
+	}
 
 	/************************** Dummy Methods **************************/
 

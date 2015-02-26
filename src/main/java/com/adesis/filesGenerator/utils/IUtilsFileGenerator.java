@@ -23,5 +23,6 @@ public interface IUtilsFileGenerator {
 	 * @return PDF encoding to byte
 	 */
 	byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data);
-
+	
+	byte[] createTXTInBytes(final Map<String, Object> data);
 }
