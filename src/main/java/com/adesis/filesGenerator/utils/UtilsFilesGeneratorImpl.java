@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.adesis.filesGenerator.utils.exception.PDFException;
 import com.lowagie.text.pdf.PdfWriter;
 
 import de.neuland.jade4j.Jade4J;
@@ -100,18 +101,22 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	 * @param pdfGenerationInfo
 	 *            Objeto que contiene toda la información relacionada con la generación del PDF.
 	 * @return
-	 * @throws JadeCompilerException
-	 * @throws IOException
+	 * @throws PDFException
 	 */
 	@SuppressWarnings("unchecked")
-	private String renderJadeToString(final FileGenerationInfo pdfGenerationInfo) throws JadeCompilerException, IOException {
+	private String renderJadeToString(final FileGenerationInfo pdfGenerationInfo) throws PDFException {
 		// Add CSS
 		// pdfGenerationInfo.getDataModel().put("css", pdfGenerationInfo.getTemplateCss());
 		// Add utils lib.
 		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("utilsTime", new UtilsLocaltime());
 		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("utilsMoney", new UtilsMoney());
 		// Render Jade with data model
-		return Jade4J.render(pdfGenerationInfo.getTemplate(), (Map<String, Object>) pdfGenerationInfo.getDataModel());
+		try {
+			return Jade4J.render(pdfGenerationInfo.getTemplate(), (Map<String, Object>) pdfGenerationInfo.getDataModel());
+		} catch (JadeCompilerException | IOException e) {
+			e.printStackTrace();
+			throw new PDFException();
+		}
 	}
 
 }
