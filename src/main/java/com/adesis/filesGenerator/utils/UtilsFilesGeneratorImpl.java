@@ -3,14 +3,21 @@
  */
 package com.adesis.filesGenerator.utils;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectOutputStream;
 import java.util.Map;
 
+import net.sf.jett.transform.ExcelTransformer;
+
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import com.adesis.filesGenerator.model.ExcelGenerationInfo;
 import com.adesis.filesGenerator.model.FileGenerationInfo;
 import com.adesis.filesGenerator.utils.exception.PDFException;
 import com.lowagie.text.pdf.PdfWriter;
@@ -20,7 +27,7 @@ import de.neuland.jade4j.exceptions.JadeCompilerException;
 
 /**
  * @author Javier Lacalle
- *
+ * 
  */
 @Component
 public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
@@ -55,6 +62,34 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		return pdfBytes;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo) {
+		byte[] excelBytes = null;
+
+		try {
+			InputStream fileIn = null;
+			fileIn = new BufferedInputStream(new FileInputStream(fileGenerationInfo.getTemplate()));
+
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final ExcelTransformer transformer = new ExcelTransformer();
+			final CustomTagLibrary libraryTags = CustomTagLibrary.getCustomTagLibrary();
+			transformer.registerTagLibrary("bbva", libraryTags);
+			transformer.addCssFile(fileGenerationInfo.getCssPath());
+			final Workbook workbook = transformer.transform(fileIn, (Map<String, Object>) fileGenerationInfo.getDataModel());
+			workbook.write(baos);
+			workbook.close();
+			baos.flush();
+			baos.close();
+			excelBytes = baos.toByteArray();
+		} catch (final Exception e) {
+
+		}
+		return excelBytes;
+	}
+
 	@Override
 	public byte[] createTXTInBytes(final Map<String, Object> data) {
 
@@ -81,7 +116,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 	/**
 	 * Método para generer el array de bytes con el que se generará el PDF.
-	 *
+	 * 
 	 * @param jadeFile
 	 *            Dirección completa donde se encuentra el fichero Jade para rederizar.
 	 * @param data
@@ -97,7 +132,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 	/**
 	 * Método para generar un Sting a partir de la plantilla Jade y los datos del modelo.
-	 *
+	 * 
 	 * @param pdfGenerationInfo
 	 *            Objeto que contiene toda la información relacionada con la generación del PDF.
 	 * @return

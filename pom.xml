@@ -60,7 +60,39 @@
 			<version>2.7</version>
 		</dependency>
 		
+		<!-- Dependencias para la creación del excel -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi</artifactId>
+			<version>3.11</version>
+		</dependency>
 		
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>3.11</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.jagg</groupId>
+			<artifactId>jagg-core</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+
+		
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-jexl</artifactId>
+			<version>2.1.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>net.sf.jett</groupId>
+			<artifactId>jett-core</artifactId>
+			<version>0.9.0</version>
+		</dependency>
+		
+		<!-- End dependencias creación excel -->
 		
 		<!-- Flying saucer **Generador de PDF a partir de XHTML** -->
 	  	<dependency>
