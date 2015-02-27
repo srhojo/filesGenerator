@@ -13,6 +13,8 @@ import java.util.Map;
 
 import net.sf.jett.transform.ExcelTransformer;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -84,6 +86,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	 * {@inheritDoc}
 	 */
 	@Override
+	@SuppressWarnings("unchecked")
 	public byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo) {
 		byte[] excelBytes = null;
 
@@ -109,18 +112,16 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	}
 
 	@Override
-	public byte[] createTXTInBytes(final Map<String, Object> data) {
+	public byte[] createTXTInBytes(final FileGenerationInfo fileGenerationInfo) {
 
 		byte[] txtBytes = null;
-		ByteArrayOutputStream bos = null;
-		ObjectOutputStream oos = null;
-
 		try {
 			Configuration cfg = new Configuration();
-			cfg.setDirectoryForTemplateLoading(new File("C:/FileGenerator/src/main/resources/templates/"));
-			Template template = cfg.getTemplate("txt/template.ftl");
+			cfg.setDefaultEncoding(ENCODE);
+			cfg.setDirectoryForTemplateLoading(new File(FilenameUtils.getFullPath(fileGenerationInfo.getTemplate())));
+			Template template = cfg.getTemplate(FilenameUtils.getName(fileGenerationInfo.getTemplate()));
 			StringWriter sw = new StringWriter();
-			template.process(data, sw);
+			template.process(fileGenerationInfo.getDataModel(), sw);
 			txtBytes = sw.toString().getBytes("UTF-8");	
 
 		} catch (final Exception e) {

@@ -38,7 +38,7 @@ public class FilesController {
 	private IUtilsFileGenerator utilsFileGenerator;
 
 	/**
-	 * Método que devuelve un PDF a partir de una plantilla creada en JADE
+	 * Mï¿½todo que devuelve un PDF a partir de una plantilla creada en JADE
 	 *
 	 * @param request
 	 * @return
@@ -105,26 +105,25 @@ public class FilesController {
 
 	}
 
-	private ExcelGenerationInfo generateInfoExcel(final URL templateUrl, final URL cssUrl) {
-		final ExcelGenerationInfo excelGenerationInfo = new ExcelGenerationInfo();
-		excelGenerationInfo.setTemplate(templateUrl.getPath());
-		excelGenerationInfo.setCssPath(cssUrl.getPath());
-		excelGenerationInfo.setDataModel(this.generateModelDummy());
-		return excelGenerationInfo;
-	}
+	
 
 	@RequestMapping(value = "/txt", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
 
 		ResponseEntity<byte[]> response;
 
+
+		final ClassLoader classLoader = getClass().getClassLoader();
+		final URL templateUrl = classLoader.getResource("templates/txt/template.ftl");
+		
 		try {
-			final byte[] contents = utilsFileGenerator.createTXTInBytes(this.generateModelDummy());
+			FileGenerationInfo fileGenerationInfo = this.generateInfoTXT(templateUrl);
+			final byte[] contents = utilsFileGenerator.createTXTInBytes(fileGenerationInfo);
 
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.parseMediaType("text/plain;charset=UTF-8"));
 			
-			final String filename = "output.txt";
+			final String filename = fileGenerationInfo.getNameFile()+".txt";
 			headers.setContentDispositionFormData(filename, filename);
 			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
@@ -147,13 +146,29 @@ public class FilesController {
 		pdfGenerationInfo.setNameFile("futurama");
 		return pdfGenerationInfo;
 	}
+	
+	private FileGenerationInfo generateInfoTXT(final URL templateUrl){
+		FileGenerationInfo txtGenerateInfo = new FileGenerationInfo();
+		txtGenerateInfo.setTemplate(templateUrl.getPath());
+		txtGenerateInfo.setDataModel(this.generateModelDummy());
+		txtGenerateInfo.setNameFile("futurama");
+		return txtGenerateInfo;
+	}
+	
+	private ExcelGenerationInfo generateInfoExcel(final URL templateUrl, final URL cssUrl) {
+		final ExcelGenerationInfo excelGenerationInfo = new ExcelGenerationInfo();
+		excelGenerationInfo.setTemplate(templateUrl.getPath());
+		excelGenerationInfo.setCssPath(cssUrl.getPath());
+		excelGenerationInfo.setDataModel(this.generateModelDummy());
+		return excelGenerationInfo;
+	}
 
 	private Map<String, Object> generateModelDummy() {
 		final Map<String, Object> model = new HashMap<String, Object>();
 		model.put("deliverymen", this.generateListDeliverymen());
 		model.put("user", this.generateUser());
 		model.put("subject", "Delivery notes");
-		model.put("message", "Impresión de datos en texto plano.");
+		model.put("message", "Impresiï¿½n de datos en texto plano.");
 		return model;
 	}
 
