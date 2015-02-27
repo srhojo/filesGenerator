@@ -39,7 +39,7 @@ import de.neuland.jade4j.template.JadeTemplate;
 public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 	private final static String ENCODE = "UTF-8";
-	// TODO Estaría mejor obteniendo el context path y en el template pasarle simplemente el nombre de la plantilla "futurama-demo"
+	// TODO Estarï¿½a mejor obteniendo el context path y en el template pasarle simplemente el nombre de la plantilla "futurama-demo"
 	private final static String CONTEXT_PATH = "";
 
 	@Autowired
@@ -119,7 +119,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 			Configuration cfg = new Configuration();
 			cfg.setDirectoryForTemplateLoading(new File("C:/FileGenerator/src/main/resources/templates/"));
 			Template template = cfg.getTemplate("txt/template.ftl");
-			sw = new StringWriter();
+			StringWriter sw = new StringWriter();
 			template.process(data, sw);
 			txtBytes = sw.toString().getBytes("UTF-8");	
 
@@ -131,9 +131,9 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	}
 
 	/*
-	 * Método para generar un Sting a partir de la plantilla Jade y los datos del modelo.
+	 * Mï¿½todo para generar un Sting a partir de la plantilla Jade y los datos del modelo.
 	 * 
-	 * @param pdfGenerationInfo Objeto que contiene toda la información relacionada con la generación del PDF.
+	 * @param pdfGenerationInfo Objeto que contiene toda la informaciï¿½n relacionada con la generaciï¿½n del PDF.
 	 * 
 	 * @return
 	 * 
