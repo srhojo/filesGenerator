@@ -1,10 +1,80 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
-</head>
-<body>
-	<p>Hello world!</p>
-</body>
-</html>
+<!DOCTYPE html><html><head><title>Futurama PDF</title><style>@page {
+ margin: 5.5% 4% 5.5% 4%;
+ size: US-Letter;
+}
+body{
+ margin: 0;
+ /*background-color: #E6E6E6;*/
+ font-family:Arial, Helvetica, sans-serif;
+}
+#mainContainer{
+ margin:0 auto;
+ width: 100%;
+}
+#header{
+ min-height: 200px;
+ margin: 5px;
+ font-size: 1.5em;
+ position: relative;
+}
+#header .icon {
+ float:left;
+ margin-left: 10%;
+ height: 150px;
+ width: 150px;
+ background-size: 100% 100%;
+ background-repeat: no-repeat;
+ background-image: url("img/icon.png") ;
+}
+#header .title {
+ position: absolute;
+ bottom: 0;
+ right: 10%;
+}
+#wrapper {
+ margin: 5% 5% 5% 5%;
+ font-size: 1em;
+}
+#wrapper .title {
+ text-align: center;
+ font-size: 2.5em;
+ margin: 0 auto 2% auto;
+}
+#contentTable {
+ width: 90%;
+ margin: 0 auto;
+ border:#151515 1px solid;
+ text-align: center;
+ -moz-border-radius:3px;
+ -webkit-border-radius:3px;
+ border-radius:3px;
+ -moz-box-shadow: 0 1px 2px #d1d1d1;
+ -webkit-box-shadow: 0 1px 2px #d1d1d1;
+ box-shadow: 0 1px 2px #d1d1d1;
+}
+#contentTable th{
+ margin: 0;
+ padding: 10px;
+ font-size: 1.5em;
+ background-color: #6E6E6E;
+ border-top:1px solid ##6E6E6E;
+ border-bottom:1px solid #6E6E6E;
+}
+#contentTable td {
+ padding:18px;
+ border-top: 1px solid #ffffff;
+ border-bottom:1px solid #e0e0e0;
+ border-left: 1px solid #e0e0e0;
+}
+#contentTable tr:nth-child(odd){
+ background-color:#D8D8D8; 
+}
+#footer {
+ font-size: 0.7em;
+ width: 100%;
+ margin: 2% 0;
+}
+#footer .info{
+ margin: 0 auto;
+ text-align: center;
+}</style></head><body><div id="mainContainer"><div id="header"><div class="icon"></div><div class="title">Javier Lacalle,Adesis</div></div><div id="wrapper"><div class="title">Delivery notes</div><table id="contentTable"><tr><th>ID</th><th>NAME</th><th>PLANET</th><th>HOUR</th><th>SALARY</th></tr><tr><td>1</td><td>Javier Lacalle</td><td>Tierra</td><td>12:56</td><td>1000 EUR</td></tr><tr><td>2</td><td>Fry </td><td>Tierra</td><td>16:56</td><td>200 EUR</td></tr><tr><td>3</td><td>Leela </td><td>Tierra(mutante)</td><td>17:56</td><td>1200 EUR</td></tr><tr><td>4</td><td>Amy Wong </td><td>Marte</td><td>19:56</td><td>5200 EUR</td></tr><tr><td>5</td><td>Zoiberg </td><td>Decapod 10</td><td>20:56</td><td>0 EUR</td></tr></table></div><div id="footer"><div class="info">"Pruebas de concepto jade-pdf"</div></div></div></body></html>

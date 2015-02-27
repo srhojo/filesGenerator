@@ -2,18 +2,22 @@ package com.adesis.filesGenerator.utils;
 
 import java.util.Map;
 
+import com.adesis.filesGenerator.model.ExcelGenerationInfo;
+import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.adesis.filesGenerator.utils.exception.FileException;
+
 /**
  * @author Javier Lacalle
- *
+ * 
  */
 public interface IUtilsFileGenerator {
 
 	/**
 	 * Método para generar un fichero PDF a partir de una plantilla Jade con un CSS especifico y un Modelo de datos asociado a la plantilla
-	 *
+	 * 
 	 * El modelo debe llevar todas las "key" que se usan en la plantilla aunque estás estén vacias.
-	 *
-	 *
+	 * 
+	 * 
 	 * @param cssFile
 	 *            location form css file
 	 * @param templateFile
@@ -21,8 +25,11 @@ public interface IUtilsFileGenerator {
 	 * @param Map
 	 *            with data model
 	 * @return PDF encoding to byte
+	 * @throws FileException
 	 */
-	byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data);
-	
+	byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException;
+
 	byte[] createTXTInBytes(final Map<String, Object> data);
+
+	byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo);
 }

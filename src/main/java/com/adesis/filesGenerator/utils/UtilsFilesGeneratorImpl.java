@@ -1,60 +1,68 @@
-/**
- *
- */
 package com.adesis.filesGenerator.utils;
 
-import java.io.ByteArrayInputStream;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import net.sf.jett.transform.ExcelTransformer;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import de.neuland.jade4j.Jade4J;
+import com.adesis.filesGenerator.model.ExcelGenerationInfo;
+import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.adesis.filesGenerator.utils.exception.EnumFileException;
+import com.adesis.filesGenerator.utils.exception.FileException;
+import com.lowagie.text.pdf.PdfWriter;
+
+import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.exceptions.JadeCompilerException;
 import freemarker.ext.beans.BeansWrapper;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import de.neuland.jade4j.template.JadeTemplate;
 
 /**
  * @author Javier Lacalle
- *
+ * 
  */
 @Component
 public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
-	private static final String ENCODE = "UTF-8";
+	private final static String ENCODE = "UTF-8";
+	// TODO Estaría mejor obteniendo el context path y en el template pasarle simplemente el nombre de la plantilla "futurama-demo"
+	private final static String CONTEXT_PATH = "";
+
+	@Autowired
+	private ConfigurationJadeTemplate configurationJadeTemplate;
 
 	/**
-	 *
+	 * @throws FileException
+	 * 
 	 */
-	public byte[] createPDFInBytes(final String templateFile, final String cssFile, final Map<String, Object> data) {
+	@Override
+	public byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException {
 
 		byte[] pdfBytes = null;
-		// Añadimos el CSS.
-		data.put("css", cssFile);
-
-		// Add utils classes
-		data.put("utilsTime", new UtilsLocaltime());
-		data.put("utilsMoney", new UtilsMoney());
 
 		try {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			final ITextRenderer renderer = new ITextRenderer();
 
-			final byte[] byteArray = renderJadeToBytes(templateFile, data);
-			final DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			final ByteArrayInputStream baosAux = new ByteArrayInputStream(byteArray);
-			final Document doc = builder.parse(baosAux);
-
-			renderer.setDocument(doc, null);
+			// Replace images
+			renderer.getSharedContext().setReplacedElementFactory(
+					new ImagesReplacesElementFactory(renderer.getSharedContext().getReplacedElementFactory()));
+			renderer.setPDFVersion(new Character(PdfWriter.VERSION_1_7));
+			renderer.setDocumentFromString(renderJadeToString(fileGenerationInfo));
 			renderer.layout();
 			renderer.createPDF(baos);
 
@@ -63,17 +71,50 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 			pdfBytes = baos.toByteArray();
 
+		} catch (final FileException fe) {
+			throw fe;
 		} catch (final Exception e) {
-			e.printStackTrace();
+			// e.printStackTrace();
+			throw new FileException(EnumFileException.ERROR_PDF_GENERATE, e.getMessage());
 		}
 		return pdfBytes;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo) {
+		byte[] excelBytes = null;
+
+		try {
+			InputStream fileIn = null;
+			fileIn = new BufferedInputStream(new FileInputStream(fileGenerationInfo.getTemplate()));
+
+			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			final ExcelTransformer transformer = new ExcelTransformer();
+			final CustomTagLibrary libraryTags = CustomTagLibrary.getCustomTagLibrary();
+			transformer.registerTagLibrary("bbva", libraryTags);
+			transformer.addCssFile(fileGenerationInfo.getCssPath());
+			final Workbook workbook = transformer.transform(fileIn, (Map<String, Object>) fileGenerationInfo.getDataModel());
+			workbook.write(baos);
+			workbook.close();
+			baos.flush();
+			baos.close();
+			excelBytes = baos.toByteArray();
+		} catch (final Exception e) {
+
+		}
+		return excelBytes;
+	}
+
+	@Override
 	public byte[] createTXTInBytes(final Map<String, Object> data) {
 
-		byte [] txtBytes = null;
-		StringWriter sw = null;
-		
+		byte[] txtBytes = null;
+		ByteArrayOutputStream bos = null;
+		ObjectOutputStream oos = null;
+
 		try {
 			Configuration cfg = new Configuration();
 			cfg.setDirectoryForTemplateLoading(new File("C:/FileGenerator/src/main/resources/templates/"));
@@ -85,24 +126,38 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return txtBytes;
 	}
 
-	/**
-	 * Método para generer el array de bytes con el que se generará el PDF.
-	 *
-	 * @param jadeFile
-	 *            Dirección completa donde se encuentra el fichero Jade para rederizar.
-	 * @param data
-	 *            HashMap con los datos con los que rellenar la plantilla.
-	 * @return array de bytes con el HTML rederizado.
-	 * @throws JadeCompilerException
-	 * @throws IOException
+	/*
+	 * Método para generar un Sting a partir de la plantilla Jade y los datos del modelo.
+	 * 
+	 * @param pdfGenerationInfo Objeto que contiene toda la información relacionada con la generación del PDF.
+	 * 
+	 * @return
+	 * 
+	 * @throws FileException
 	 */
-	private byte[] renderJadeToBytes(final String jadeFile, final Map<String, Object> data) throws JadeCompilerException, IOException {
-		final String html = Jade4J.render(jadeFile, data);
-		return html.getBytes(ENCODE);
+	@SuppressWarnings("unchecked")
+	private String renderJadeToString(final FileGenerationInfo pdfGenerationInfo) throws FileException {
+		// Add utils lib.
+		final Map<String, Object> dataModel = (Map<String, Object>) pdfGenerationInfo.getDataModel();
+		dataModel.put("utilsTime", new UtilsLocaltime());
+		dataModel.put("utilsMoney", new UtilsMoney());
+		try {
+			// Set configuration
+			final JadeConfiguration jadeConfiguration = new JadeConfiguration();
+			configurationJadeTemplate.setConfiguration(CONTEXT_PATH, ENCODE, pdfGenerationInfo.getTemplate());
+
+			// Generate Template
+			final JadeTemplate template = configurationJadeTemplate.configureJadeTemplate();
+
+			// Render Jade with data model
+			return jadeConfiguration.renderTemplate(template, dataModel);
+		} catch (JadeCompilerException | IOException e) {
+			throw new FileException(EnumFileException.ERROR_PDF_GENERATE_TEMPLATE, e.getMessage());
+		}
 	}
 
 }

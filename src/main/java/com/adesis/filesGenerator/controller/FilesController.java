@@ -19,6 +19,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.adesis.filesGenerator.model.ExcelGenerationInfo;
+import com.adesis.filesGenerator.model.FileGenerationInfo;
 import com.adesis.filesGenerator.model.dummy.Deliveryman;
 import com.adesis.filesGenerator.model.dummy.Money;
 import com.adesis.filesGenerator.model.dummy.Planet;
@@ -27,7 +29,7 @@ import com.adesis.filesGenerator.utils.IUtilsFileGenerator;
 
 /**
  * @author Javier Lacalle
- *
+ * 
  */
 @Controller
 public class FilesController {
@@ -35,23 +37,62 @@ public class FilesController {
 	@Autowired
 	private IUtilsFileGenerator utilsFileGenerator;
 
+	/**
+	 * Método que devuelve un PDF a partir de una plantilla creada en JADE
+	 *
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generatePDF(final HttpServletRequest request) {
+		// Final response.
+		ResponseEntity<byte[]> response;
+
+		// Get template
+		final ClassLoader classLoader = getClass().getClassLoader();
+		final URL templateUrl = classLoader.getResource("templates/pdf/futurama-demo.jade");
+
+		final FileGenerationInfo pdfGenerationInfo = generateInfoPDF(templateUrl);
+
+		// PDF header of response
+		final String filename = pdfGenerationInfo.getNameFile() + ".pdf";
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		headers.setContentDispositionFormData(filename, filename);
+		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+
+		try {
+			// Generate PDF
+			final byte[] contents = utilsFileGenerator.createPDFInBytes(pdfGenerationInfo);
+
+			// Include PDF on Response
+			response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
+		} catch (final Exception e) {
+			e.printStackTrace();
+			response = new ResponseEntity<byte[]>(null, null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		return response;
+
+	}
+
+	@RequestMapping(value = "/excel", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> generateExcel(final HttpServletRequest request) {
 
 		ResponseEntity<byte[]> response;
 
 		final ClassLoader classLoader = getClass().getClassLoader();
-		final URL templateUrl = classLoader.getResource("templates/pdf/template.jade");
-		final URL cssUrl = classLoader.getResource("templates/pdf/css/print.css");
+		final URL templateUrl = classLoader.getResource("templates/excel/plantilla.xlsx");
+		final URL cssUrl = classLoader.getResource("templates/excel/css/print.css");
+		final ExcelGenerationInfo excelGenerationInfo = generateInfoExcel(templateUrl, cssUrl);
 
 		try {
 
-			final byte[] contents = utilsFileGenerator.createPDFInBytes(templateUrl.getPath(), cssUrl.getPath(), this.generateModelDummy());
+			final byte[] contents = utilsFileGenerator.createExcelInBytes(excelGenerationInfo);
 
 			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.parseMediaType("application/pdf"));
+			headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));
 
-			final String filename = "output.pdf";
+			final String filename = "output.xlsx";
 			headers.setContentDispositionFormData(filename, filename);
 			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
@@ -63,14 +104,21 @@ public class FilesController {
 		return response;
 
 	}
-	
+
+	private ExcelGenerationInfo generateInfoExcel(final URL templateUrl, final URL cssUrl) {
+		final ExcelGenerationInfo excelGenerationInfo = new ExcelGenerationInfo();
+		excelGenerationInfo.setTemplate(templateUrl.getPath());
+		excelGenerationInfo.setCssPath(cssUrl.getPath());
+		excelGenerationInfo.setDataModel(this.generateModelDummy());
+		return excelGenerationInfo;
+	}
+
 	@RequestMapping(value = "/txt", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
 
 		ResponseEntity<byte[]> response;
 
 		try {
-
 			final byte[] contents = utilsFileGenerator.createTXTInBytes(this.generateModelDummy());
 
 			final HttpHeaders headers = new HttpHeaders();
@@ -90,6 +138,15 @@ public class FilesController {
 	}
 
 	/************************** Dummy Methods **************************/
+
+	private FileGenerationInfo generateInfoPDF(final URL templateUrl) {
+		final FileGenerationInfo pdfGenerationInfo = new FileGenerationInfo();
+		pdfGenerationInfo.setTemplate(templateUrl.getPath());
+		// pdfGenerationInfo.setTemplate("futurama-demo");
+		pdfGenerationInfo.setDataModel(this.generateModelDummy());
+		pdfGenerationInfo.setNameFile("futurama");
+		return pdfGenerationInfo;
+	}
 
 	private Map<String, Object> generateModelDummy() {
 		final Map<String, Object> model = new HashMap<String, Object>();
