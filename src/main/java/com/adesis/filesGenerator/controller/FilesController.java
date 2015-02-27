@@ -36,28 +36,35 @@ public class FilesController {
 	@Autowired
 	private IUtilsFileGenerator utilsFileGenerator;
 
+	/**
+	 * Método que devuelve un PDF a partir de una plantilla creada en JADE
+	 *
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "/pdf", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generatePDF(final HttpServletRequest request) {
-
+		// Final response.
 		ResponseEntity<byte[]> response;
 
+		// Get template
 		final ClassLoader classLoader = getClass().getClassLoader();
-		final URL templateUrl = classLoader.getResource("templates/pdf/template.jade");
-		final URL cssUrl = classLoader.getResource("templates/pdf/css/print.css");
+		final URL templateUrl = classLoader.getResource("templates/pdf/futurama-demo.jade");
 
-		final FileGenerationInfo pdfGenerationInfo = generateInfoPDF(templateUrl, cssUrl);
+		final FileGenerationInfo pdfGenerationInfo = generateInfoPDF(templateUrl);
+
+		// PDF header of response
+		final String filename = pdfGenerationInfo.getNameFile() + ".pdf";
+		final HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		headers.setContentDispositionFormData(filename, filename);
+		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
 		try {
-
+			// Generate PDF
 			final byte[] contents = utilsFileGenerator.createPDFInBytes(pdfGenerationInfo);
 
-			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.parseMediaType("application/pdf"));
-
-			final String filename = "output.pdf";
-			headers.setContentDispositionFormData(filename, filename);
-			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
-
+			// Include PDF on Response
 			response = new ResponseEntity<byte[]>(contents, headers, HttpStatus.OK);
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -67,24 +74,12 @@ public class FilesController {
 
 	}
 
-	@SuppressWarnings("unchecked")
-	private FileGenerationInfo generateInfoPDF(final URL templateUrl, final URL cssUrl) {
-		final FileGenerationInfo pdfGenerationInfo = new FileGenerationInfo();
-		// pdfGenerationInfo.setTemplateCss(cssUrl.getPath());
-		pdfGenerationInfo.setTemplate(templateUrl.getPath());
-		pdfGenerationInfo.setDataModel(this.generateModelDummy());
-		// TODO Cambiar a algo más bonico
-		((Map<String, Object>) pdfGenerationInfo.getDataModel()).put("css", cssUrl.getPath());
-		return pdfGenerationInfo;
-	}
-
 	@RequestMapping(value = "/txt", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
 
 		ResponseEntity<byte[]> response;
 
 		try {
-
 			final byte[] contents = utilsFileGenerator.createTXTInBytes(this.generateModelDummy());
 
 			final HttpHeaders headers = new HttpHeaders();
@@ -104,6 +99,15 @@ public class FilesController {
 	}
 
 	/************************** Dummy Methods **************************/
+
+	private FileGenerationInfo generateInfoPDF(final URL templateUrl) {
+		final FileGenerationInfo pdfGenerationInfo = new FileGenerationInfo();
+		pdfGenerationInfo.setTemplate(templateUrl.getPath());
+		// pdfGenerationInfo.setTemplate("futurama-demo");
+		pdfGenerationInfo.setDataModel(this.generateModelDummy());
+		pdfGenerationInfo.setNameFile("futurama");
+		return pdfGenerationInfo;
+	}
 
 	private Map<String, Object> generateModelDummy() {
 		final Map<String, Object> model = new HashMap<String, Object>();

@@ -3,6 +3,7 @@ package com.adesis.filesGenerator.utils;
 import java.util.Map;
 
 import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.adesis.filesGenerator.utils.exception.FileException;
 
 /**
  * @author Javier Lacalle
@@ -23,8 +24,9 @@ public interface IUtilsFileGenerator {
 	 * @param Map
 	 *            with data model
 	 * @return PDF encoding to byte
+	 * @throws FileException
 	 */
-	byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo);
+	byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException;
 
 	byte[] createTXTInBytes(final Map<String, Object> data);
 }
