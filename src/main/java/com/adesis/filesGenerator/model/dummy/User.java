@@ -1,6 +1,12 @@
 package com.adesis.filesGenerator.model.dummy;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4543597804765175757L;
 	private String name;
 	private String company;
 

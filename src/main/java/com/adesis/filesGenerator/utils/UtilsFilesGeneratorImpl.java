@@ -5,8 +5,9 @@ package com.adesis.filesGenerator.utils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +19,9 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import de.neuland.jade4j.Jade4J;
 import de.neuland.jade4j.exceptions.JadeCompilerException;
+import freemarker.ext.beans.BeansWrapper;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 /**
  * @author Javier Lacalle
@@ -65,21 +69,18 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		return pdfBytes;
 	}
 	
-	public byte[] createTXTInBytes(Map<String, Object> data) {
-		
-		byte[] txtBytes = null;
-        ByteArrayOutputStream bos = null;
-        ObjectOutputStream oos = null;
+	public byte[] createTXTInBytes(final Map<String, Object> data) {
+
+		byte [] txtBytes = null;
+		StringWriter sw = null;
 		
 		try {
-			bos = new ByteArrayOutputStream();
-			oos = new ObjectOutputStream(bos);
-			oos.writeObject(data);
-			oos.flush();
-			bos.flush();
-			bos.close();
-			oos.close();
-			txtBytes = bos.toByteArray();
+			Configuration cfg = new Configuration();
+			cfg.setDirectoryForTemplateLoading(new File("C:/FileGenerator/src/main/resources/templates/"));
+			Template template = cfg.getTemplate("txt/template.ftl");
+			sw = new StringWriter();
+			template.process(data, sw);
+			txtBytes = sw.toString().getBytes("UTF-8");	
 
 		} catch (final Exception e) {
 			e.printStackTrace();

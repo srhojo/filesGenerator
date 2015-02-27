@@ -83,8 +83,13 @@
 	      <version>${jUnit}</version>
 	      <scope>test</scope>
 	    </dependency>
-  
-  	</dependencies>
+
+	    <dependency>
+	    	<groupId>freemarker</groupId>
+	    	<artifactId>freemarker</artifactId>
+	    	<version>2.3.9</version>
+	    </dependency>
+	</dependencies>
   
 	 <build>
 	 	<plugins>

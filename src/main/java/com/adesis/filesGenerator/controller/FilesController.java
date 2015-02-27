@@ -74,8 +74,8 @@ public class FilesController {
 			final byte[] contents = utilsFileGenerator.createTXTInBytes(this.generateModelDummy());
 
 			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.parseMediaType("text/plain"));
-
+			headers.setContentType(MediaType.parseMediaType("text/plain;charset=UTF-8"));
+			
 			final String filename = "output.txt";
 			headers.setContentDispositionFormData(filename, filename);
 			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
@@ -96,6 +96,7 @@ public class FilesController {
 		model.put("deliverymen", this.generateListDeliverymen());
 		model.put("user", this.generateUser());
 		model.put("subject", "Delivery notes");
+		model.put("message", "Impresión de datos en texto plano.");
 		return model;
 	}
 

@@ -1,9 +1,15 @@
 package com.adesis.filesGenerator.model.dummy;
 
+import java.io.Serializable;
+
 import org.joda.time.LocalTime;
 
-public class Deliveryman {
+public class Deliveryman implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5964890068623666838L;
 	private Integer id;
 	private String name;
 	private String surname;
@@ -16,7 +22,7 @@ public class Deliveryman {
 	}
 
 	public Deliveryman(final Integer id, final String name, final String surname, final Integer years, final LocalTime time,
-			final Planet planet, final Money salary) {
+			final Planet planet, final Money salary)  {
 		super();
 		this.setId(id);
 		this.name = name;

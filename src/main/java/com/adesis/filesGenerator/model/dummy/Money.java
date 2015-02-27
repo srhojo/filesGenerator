@@ -3,14 +3,19 @@
  */
 package com.adesis.filesGenerator.model.dummy;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author Javier Lacalle
  *
  */
-public class Money {
+public class Money implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6511705291785702096L;
 	private BigDecimal amount;
 	private String currency;
 
