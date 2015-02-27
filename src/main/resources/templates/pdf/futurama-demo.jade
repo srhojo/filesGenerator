@@ -1,0 +1,23 @@
+extends main-template.jade
+
+block header
+	include futurama-header.jade
+block content
+	#wrapper
+		.title=subject
+		table#contentTable
+			tr
+				th="ID"
+				th="NAME"
+				th="PLANET"
+				th="HOUR"
+				th="SALARY"
+			for deliveryman in deliverymen
+				tr
+					td=deliveryman.id
+					td=deliveryman.name +' '+deliveryman.surname
+					td=deliveryman.planet.name
+					td=utilsTime.parseLocaltimeToString(deliveryman.time,"HH:mm")
+					td=utilsMoney.parseMoneyToString(deliveryman.salary)
+	#footer
+		.info "Pruebas de concepto jade-pdf"
