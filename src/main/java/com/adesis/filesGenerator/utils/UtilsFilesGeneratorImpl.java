@@ -11,9 +11,7 @@ import java.util.Map;
 import net.sf.jett.transform.ExcelTransformer;
 
 import org.apache.poi.ss.usermodel.Workbook;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Component;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
@@ -43,7 +41,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 	/**
 	 * @throws FileException
-	 *
+	 * 
 	 */
 	@Override
 	public byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException {
@@ -128,11 +126,13 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		return txtBytes;
 	}
 
+	/*
 	 * Método para generar un Sting a partir de la plantilla Jade y los datos del modelo.
 	 * 
-	 * @param pdfGenerationInfo
-	 *            Objeto que contiene toda la información relacionada con la generación del PDF.
+	 * @param pdfGenerationInfo Objeto que contiene toda la información relacionada con la generación del PDF.
+	 * 
 	 * @return
+	 * 
 	 * @throws FileException
 	 */
 	@SuppressWarnings("unchecked")
