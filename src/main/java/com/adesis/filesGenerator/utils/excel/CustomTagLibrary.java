@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.excel;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,7 +8,7 @@ import net.sf.jett.tag.TagLibrary;
 
 /**
  * @author Adesis
- * 
+ *
  */
 public class CustomTagLibrary implements TagLibrary {
 
@@ -27,7 +27,7 @@ public class CustomTagLibrary implements TagLibrary {
 
 	/**
 	 * Returns the singleton instance of a <code>CustomTagLibrary</code>.
-	 * 
+	 *
 	 * @return The <code>CustomTagLibrary</code>.
 	 */
 	public static CustomTagLibrary getCustomTagLibrary() {
@@ -36,7 +36,7 @@ public class CustomTagLibrary implements TagLibrary {
 
 	/**
 	 * Returns the <code>Map</code> of tag names to tag <code>Class</code> objects.
-	 * 
+	 *
 	 * @return A <code>Map</code> of tag names to tag <code>Class</code> objects.
 	 */
 	@Override

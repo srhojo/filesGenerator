@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.pdf;
 
 import java.io.IOException;
 

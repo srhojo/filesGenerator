@@ -29,11 +29,14 @@ import com.adesis.filesGenerator.utils.IUtilsFileGenerator;
 
 /**
  * @author Javier Lacalle
- * 
+ *
  */
 @Controller
 public class FilesController {
 
+	private static final String APPLICATION_EXCEL = "application/vnd.ms-excel";
+	private static final String PDF_EXTENSION = ".pdf";
+	private static final String APPLICATION_PDF = "application/pdf";
 	@Autowired
 	private IUtilsFileGenerator utilsFileGenerator;
 
@@ -55,9 +58,9 @@ public class FilesController {
 		final FileGenerationInfo pdfGenerationInfo = generateInfoPDF(templateUrl);
 
 		// PDF header of response
-		final String filename = pdfGenerationInfo.getNameFile() + ".pdf";
+		final String filename = pdfGenerationInfo.getNameFile() + PDF_EXTENSION;
 		final HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.parseMediaType("application/pdf"));
+		headers.setContentType(MediaType.parseMediaType(APPLICATION_PDF));
 		headers.setContentDispositionFormData(filename, filename);
 		headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
@@ -90,7 +93,7 @@ public class FilesController {
 			final byte[] contents = utilsFileGenerator.createExcelInBytes(excelGenerationInfo);
 
 			final HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));
+			headers.setContentType(MediaType.parseMediaType(APPLICATION_EXCEL));
 
 			final String filename = "output.xlsx";
 			headers.setContentDispositionFormData(filename, filename);
@@ -105,25 +108,22 @@ public class FilesController {
 
 	}
 
-	
-
 	@RequestMapping(value = "/txt", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> generateTXT(final HttpServletRequest request) {
 
 		ResponseEntity<byte[]> response;
 
-
 		final ClassLoader classLoader = getClass().getClassLoader();
 		final URL templateUrl = classLoader.getResource("templates/txt/template.ftl");
-		
+
 		try {
-			FileGenerationInfo fileGenerationInfo = this.generateInfoTXT(templateUrl);
+			final FileGenerationInfo fileGenerationInfo = this.generateInfoTXT(templateUrl);
 			final byte[] contents = utilsFileGenerator.createTXTInBytes(fileGenerationInfo);
 
 			final HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.parseMediaType("text/plain;charset=UTF-8"));
-			
-			final String filename = fileGenerationInfo.getNameFile()+".txt";
+
+			final String filename = fileGenerationInfo.getNameFile() + ".txt";
 			headers.setContentDispositionFormData(filename, filename);
 			headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
 
@@ -146,15 +146,15 @@ public class FilesController {
 		pdfGenerationInfo.setNameFile("futurama");
 		return pdfGenerationInfo;
 	}
-	
-	private FileGenerationInfo generateInfoTXT(final URL templateUrl){
-		FileGenerationInfo txtGenerateInfo = new FileGenerationInfo();
+
+	private FileGenerationInfo generateInfoTXT(final URL templateUrl) {
+		final FileGenerationInfo txtGenerateInfo = new FileGenerationInfo();
 		txtGenerateInfo.setTemplate(templateUrl.getPath());
 		txtGenerateInfo.setDataModel(this.generateModelDummy());
 		txtGenerateInfo.setNameFile("futurama");
 		return txtGenerateInfo;
 	}
-	
+
 	private ExcelGenerationInfo generateInfoExcel(final URL templateUrl, final URL cssUrl) {
 		final ExcelGenerationInfo excelGenerationInfo = new ExcelGenerationInfo();
 		excelGenerationInfo.setTemplate(templateUrl.getPath());

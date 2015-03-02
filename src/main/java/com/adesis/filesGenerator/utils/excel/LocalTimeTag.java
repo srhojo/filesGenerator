@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.excel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 /**
  * @author Adesis
- * 
+ *
  */
 public class LocalTimeTag extends BaseTag {
 	public static final String ATTR_MINUTES = "minutes";
