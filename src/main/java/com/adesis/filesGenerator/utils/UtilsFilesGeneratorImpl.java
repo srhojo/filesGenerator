@@ -19,8 +19,13 @@ import org.xhtmlrenderer.pdf.ITextRenderer;
 
 import com.adesis.filesGenerator.model.ExcelGenerationInfo;
 import com.adesis.filesGenerator.model.FileGenerationInfo;
+import com.adesis.filesGenerator.utils.adapters.LocaltimeAdapter;
+import com.adesis.filesGenerator.utils.adapters.MoneyAdapter;
+import com.adesis.filesGenerator.utils.excel.CustomTagLibrary;
 import com.adesis.filesGenerator.utils.exception.EnumFileException;
 import com.adesis.filesGenerator.utils.exception.FileException;
+import com.adesis.filesGenerator.utils.pdf.ConfigurationJadeTemplate;
+import com.adesis.filesGenerator.utils.pdf.ImagesReplacesElementFactory;
 import com.lowagie.text.pdf.PdfWriter;
 
 import de.neuland.jade4j.JadeConfiguration;
@@ -44,8 +49,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	private ConfigurationJadeTemplate configurationJadeTemplate;
 
 	/**
-	 * @throws FileException
-	 * 
+	 * {@inheritDoc}
 	 */
 	@Override
 	public byte[] createPDFInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException {
@@ -72,7 +76,6 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 		} catch (final FileException fe) {
 			throw fe;
 		} catch (final Exception e) {
-			// e.printStackTrace();
 			throw new FileException(EnumFileException.ERROR_PDF_GENERATE, e.getMessage());
 		}
 		return pdfBytes;
@@ -80,10 +83,12 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * @throws FileException
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
-	public byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo) {
+	public byte[] createExcelInBytes(final ExcelGenerationInfo fileGenerationInfo) throws FileException {
 		byte[] excelBytes = null;
 
 		try {
@@ -93,7 +98,7 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 			final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			final ExcelTransformer transformer = new ExcelTransformer();
 			final CustomTagLibrary libraryTags = CustomTagLibrary.getCustomTagLibrary();
-			transformer.registerTagLibrary("bbva", libraryTags);
+			transformer.registerTagLibrary("custom", libraryTags);
 			transformer.addCssFile(fileGenerationInfo.getCssPath());
 			final Workbook workbook = transformer.transform(fileIn, (Map<String, Object>) fileGenerationInfo.getDataModel());
 			workbook.write(baos);
@@ -102,13 +107,16 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 			baos.close();
 			excelBytes = baos.toByteArray();
 		} catch (final Exception e) {
-
+			throw new FileException(EnumFileException.ERROR_EXCEL_GENERATE, e.getMessage());
 		}
 		return excelBytes;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public byte[] createTXTInBytes(final FileGenerationInfo fileGenerationInfo) {
+	public byte[] createTXTInBytes(final FileGenerationInfo fileGenerationInfo) throws FileException {
 
 		byte[] txtBytes = null;
 		try {
@@ -118,10 +126,10 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 			final Template template = cfg.getTemplate(FilenameUtils.getName(fileGenerationInfo.getTemplate()));
 			final StringWriter sw = new StringWriter();
 			template.process(fileGenerationInfo.getDataModel(), sw);
-			txtBytes = sw.toString().getBytes("UTF-8");
+			txtBytes = sw.toString().getBytes(ENCODE);
 
 		} catch (final Exception e) {
-			e.printStackTrace();
+			throw new FileException(EnumFileException.ERROR_TXT_GENERATE, e.getMessage());
 		}
 
 		return txtBytes;
@@ -138,10 +146,10 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 	 */
 	@SuppressWarnings("unchecked")
 	private String renderJadeToString(final FileGenerationInfo pdfGenerationInfo) throws FileException {
-		// Add utils lib.
+		// Add adapter lib.
 		final Map<String, Object> dataModel = (Map<String, Object>) pdfGenerationInfo.getDataModel();
-		dataModel.put("utilsTime", new UtilsLocaltime());
-		dataModel.put("utilsMoney", new UtilsMoney());
+		dataModel.put("utilsTime", new LocaltimeAdapter());
+		dataModel.put("utilsMoney", new MoneyAdapter());
 		try {
 			// Set configuration
 			final JadeConfiguration jadeConfiguration = new JadeConfiguration();

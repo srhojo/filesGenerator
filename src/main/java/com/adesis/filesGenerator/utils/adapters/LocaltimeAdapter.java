@@ -1,7 +1,4 @@
-/**
- *
- */
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.adapters;
 
 import org.joda.time.LocalTime;
 
@@ -9,7 +6,7 @@ import org.joda.time.LocalTime;
  * @author Javier Lacalle
  *
  */
-public class UtilsLocaltime {
+public class LocaltimeAdapter {
 
 	public String parseLocaltimeToString(final LocalTime time, final String timeFormat) {
 		if (time == null) {

@@ -9,8 +9,8 @@ El modelo de datos debe ser un HasMap<String,Object> con el nombre del objeto qu
 
 ## Excel
 - **Description:**
-- **url:**
+- **url:** http://localhost:8080/filesGenerator/files/excel
 
 ## Txt
 - **Description:**
-- **url:**
+- **url:** http://localhost:8080/filesGenerator/files/txt

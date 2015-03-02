@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.adapters;
 
 import com.adesis.filesGenerator.model.dummy.Money;
 
@@ -6,7 +6,7 @@ import com.adesis.filesGenerator.model.dummy.Money;
  * @author Javier Lacalle
  *
  */
-public class UtilsMoney {
+public class MoneyAdapter {
 
 	/**
 	 * @param money

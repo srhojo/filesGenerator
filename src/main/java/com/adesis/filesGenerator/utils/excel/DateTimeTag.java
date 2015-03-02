@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.excel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,19 +14,18 @@ import net.sf.jett.util.SheetUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.joda.time.LocalTime;
 
 /**
  * @author Adesis
  * 
  */
-public class LocalTimeTag extends BaseTag {
-	public static final String ATTR_MINUTES = "minutes";
-	public static final String ATTR_HOURS = "hours";
+public class DateTimeTag extends BaseTag {
+	public static final String ATTR_VALUE = "value";
+	private static final List<String> REQ_ATTRS = new ArrayList<String>(Arrays.asList(ATTR_VALUE));
+	private static final String LOCAL_TIME_FORMAT = "HH:mm";
 
-	private static final List<String> REQ_ATTRS = new ArrayList<String>(Arrays.asList(ATTR_HOURS, ATTR_MINUTES));
-
-	private String hours;
-	private String minutes;
+	private Object value;
 
 	/**
 	 * {@inheritDoc}
@@ -42,8 +41,7 @@ public class LocalTimeTag extends BaseTag {
 		final TagContext context = getContext();
 		final Map<String, Object> beans = context.getBeans();
 		final Map<String, RichTextString> attributes = getAttributes();
-		hours = AttributeUtil.evaluateString(context.getCurrentTag(), attributes.get(ATTR_HOURS), beans, ATTR_HOURS);
-		minutes = AttributeUtil.evaluateString(context.getCurrentTag(), attributes.get(ATTR_MINUTES), beans, ATTR_MINUTES);
+		value = AttributeUtil.evaluateObject(context.getCurrentTag(), attributes.get(ATTR_VALUE), beans, ATTR_VALUE, Object.class, null);
 	}
 
 	/**
@@ -56,7 +54,9 @@ public class LocalTimeTag extends BaseTag {
 		final Block block = context.getBlock();
 
 		final Cell cell = sheet.getRow(block.getTopRowNum()).getCell(block.getLeftColNum());
-		final String finalValue = hours + ":" + minutes;
+
+		final String finalValue;
+		finalValue = ((LocalTime) value).toString(LOCAL_TIME_FORMAT);
 		SheetUtil.setCellValue(cell, finalValue);
 
 		return true;

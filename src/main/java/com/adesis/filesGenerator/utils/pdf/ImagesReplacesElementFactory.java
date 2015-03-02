@@ -1,4 +1,4 @@
-package com.adesis.filesGenerator.utils;
+package com.adesis.filesGenerator.utils.pdf;
 
 import java.io.InputStream;
 
@@ -16,6 +16,10 @@ import org.xhtmlrenderer.simple.extend.FormSubmissionListener;
 
 import com.lowagie.text.Image;
 
+/**
+ * @author Javier Lacalle
+ *
+ */
 public class ImagesReplacesElementFactory implements ReplacedElementFactory {
 	private static final String DIV = "div";
 	private static final String CLASS = "class";
@@ -72,7 +76,6 @@ public class ImagesReplacesElementFactory implements ReplacedElementFactory {
 	@Override
 	public void reset() {
 		this.superFactory.reset();
-
 	}
 
 	@Override
