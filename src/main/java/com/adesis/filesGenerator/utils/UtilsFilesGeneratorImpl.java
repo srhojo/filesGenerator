@@ -3,17 +3,14 @@ package com.adesis.filesGenerator.utils;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.util.Map;
 
 import net.sf.jett.transform.ExcelTransformer;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +25,9 @@ import com.lowagie.text.pdf.PdfWriter;
 
 import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.exceptions.JadeCompilerException;
-import freemarker.ext.beans.BeansWrapper;
+import de.neuland.jade4j.template.JadeTemplate;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
-import de.neuland.jade4j.template.JadeTemplate;
 
 /**
  * @author Javier Lacalle
@@ -116,13 +112,13 @@ public class UtilsFilesGeneratorImpl implements IUtilsFileGenerator {
 
 		byte[] txtBytes = null;
 		try {
-			Configuration cfg = new Configuration();
+			final Configuration cfg = new Configuration();
 			cfg.setDefaultEncoding(ENCODE);
 			cfg.setDirectoryForTemplateLoading(new File(FilenameUtils.getFullPath(fileGenerationInfo.getTemplate())));
-			Template template = cfg.getTemplate(FilenameUtils.getName(fileGenerationInfo.getTemplate()));
-			StringWriter sw = new StringWriter();
+			final Template template = cfg.getTemplate(FilenameUtils.getName(fileGenerationInfo.getTemplate()));
+			final StringWriter sw = new StringWriter();
 			template.process(fileGenerationInfo.getDataModel(), sw);
-			txtBytes = sw.toString().getBytes("UTF-8");	
+			txtBytes = sw.toString().getBytes("UTF-8");
 
 		} catch (final Exception e) {
 			e.printStackTrace();

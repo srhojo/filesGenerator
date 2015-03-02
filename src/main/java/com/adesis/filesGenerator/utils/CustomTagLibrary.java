@@ -22,7 +22,7 @@ public class CustomTagLibrary implements TagLibrary {
 	private CustomTagLibrary() {
 		myTagMap = new HashMap<String, Class<? extends Tag>>();
 		myTagMap.put("money", MoneyTag.class);
-		myTagMap.put("localTime", LocalTimeTag.class);
+		myTagMap.put("localTime", DateTimeTag.class);
 	}
 
 	/**
